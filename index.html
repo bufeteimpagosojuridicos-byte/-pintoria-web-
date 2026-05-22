@@ -1,1 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PintorApp · La App del Pintor Profesional</title>
+  <meta name="description" content="Presupuestos profesionales en 2 minutos desde tu móvil. Hecha por un pintor, para pintores. PintorApp Lite 5€ pago único · Pro 4,99€/mes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & VARIABLES ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0f1628;
+      --navy2:   #1a2340;
+      --navy3:   #212d50;
+      --gold:    #FFB800;
+      --gold2:   #e6a500;
+      --white:   #ffffff;
+      --gray:    #8a97b0;
+      --light:   #f4f6fb;
+      --green:   #22c55e;
+      --font-h:  'Bebas Neue', sans-serif;
+      --font-b:  'Barlow', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-b);
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15,22,40,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,184,0,0.15);
+      padding: 0 24px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-h); font-size: 1.5rem; letter-spacing: 1px;
+      color: var(--white); text-decoration: none;
+    }
+    .header-logo img { height: 38px; width: auto; object-fit: contain; }
+    .header-logo span { color: var(--gold); }
+
+    nav { display: flex; align-items: center; gap: 8px; }
+    nav a {
+      color: var(--gray); font-size: .85rem; font-weight: 600;
+      text-decoration: none; padding: 6px 12px; border-radius: 6px;
+      transition: color .2s, background .2s;
+    }
+    nav a:hover { color: var(--white); background: rgba(255,184,0,.1); }
+    .nav-cta {
+      background: var(--gold) !important; color: var(--navy) !important;
+      border-radius: 8px; padding: 8px 18px !important; font-weight: 700 !important;
+      font-size: .9rem !important;
+    }
+    .nav-cta:hover { background: var(--gold2) !important; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding-top: 64px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #0f1628 0%, #1a2340 50%, #0f1628 100%);
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 70% at 70% 50%, rgba(255,184,0,0.08) 0%, transparent 70%);
+    }
+    .hero-container {
+      position: relative; z-index: 2;
+      max-width: 1200px; margin: 0 auto;
+      padding: 60px 24px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,184,0,0.15); border: 1px solid rgba(255,184,0,0.3);
+      color: var(--gold); font-size: .8rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; padding: 6px 16px; border-radius: 50px;
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-family: var(--font-h);
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      line-height: .95; letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    .hero-title span { color: var(--gold); }
+    .hero-subtitle {
+      font-size: 1.25rem; color: rgba(255,255,255,.75);
+      line-height: 1.5; margin-bottom: 36px; max-width: 480px;
+    }
+    .hero-buttons {
+      display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 48px;
+    }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold); color: var(--navy);
+      font-family: var(--font-b); font-weight: 800; font-size: 1rem;
+      padding: 14px 28px; border-radius: 10px; border: none;
+      cursor: pointer; text-decoration: none; letter-spacing: .5px;
+      transition: transform .15s, box-shadow .15s, background .15s;
+      box-shadow: 0 4px 20px rgba(255,184,0,0.35);
+    }
+    .btn-gold:hover { background: var(--gold2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,184,0,0.45); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--white);
+      font-family: var(--font-b); font-weight: 700; font-size: 1rem;
+      padding: 13px 26px; border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.35);
+      cursor: pointer; text-decoration: none; letter-spacing: .5px;
+      transition: border-color .2s, background .2s, transform .15s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .btn-whatsapp {
+      background: #25D366; color: white;
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-b); font-weight: 800; font-size: 1.05rem;
+      padding: 15px 30px; border-radius: 12px; border: none;
+      cursor: pointer; text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+    }
+    .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,0.45); }
+
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 20px; padding-top: 36px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+    .stat-num {
+      font-family: var(--font-h); font-size: 2.4rem; color: var(--gold);
+      letter-spacing: 1px;
+    }
+    .stat-label { font-size: .8rem; color: var(--gray); margin-top: 2px; }
+
+    .hero-image {
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .hero-image img {
+      width: 100%; max-width: 460px;
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,184,0,0.1);
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .hero-image::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255,184,0,0.2), transparent 70%);
+      border-radius: 50%; z-index: -1;
+    }
+
+    /* ── STRIP CONFIANZA ── */
+    .trust-strip {
+      background: var(--gold);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 40px; flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-b); font-weight: 700;
+      color: var(--navy); font-size: .9rem;
+    }
+    .trust-item svg { width: 18px; height: 18px; }
+
+    /* ── SECCIONES GENÉRICAS ── */
+    section { padding: 100px 24px; }
+    .section-light { background: var(--light); color: var(--navy); }
+    .section-navy2 { background: var(--navy2); }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .eyebrow {
+      display: inline-block;
+      font-size: .75rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: var(--font-h);
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      letter-spacing: 1.5px; line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1.1rem; opacity: .7; max-width: 600px; line-height: 1.6;
+    }
+    .section-header { margin-bottom: 60px; }
+    .section-header.centered { text-align: center; }
+    .section-header.centered .section-sub { margin: 0 auto; }
+
+    /* ── FEATURES GRID ── */
+    #features { background: var(--navy2); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 28px;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(255,184,0,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .feature-icon {
+      font-size: 2.2rem; margin-bottom: 16px;
+      display: block;
+    }
+    .feature-card h3 {
+      font-family: var(--font-h); font-size: 1.35rem;
+      letter-spacing: 1px; margin-bottom: 8px;
+    }
+    .feature-card p { font-size: .95rem; color: var(--gray); line-height: 1.6; }
+
+    /* ── APP SHOWCASE ── */
+    #app { background: var(--navy); }
+    .app-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 70px; align-items: center;
+    }
+    .app-split img {
+      width: 100%; max-width: 420px;
+      border-radius: 20px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    }
+    .app-tagline {
+      font-family: var(--font-h); font-size: clamp(2rem,3.5vw,3rem);
+      letter-spacing: 1.5px; line-height: 1.1; margin-bottom: 24px;
+    }
+    .app-tagline em { color: var(--gold); font-style: normal; }
+
+    /* ── ICONOS FEATURES ── */
+    #iconos { background: var(--navy2); }
+    .iconos-img {
+      width: 100%; border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .iconos-list {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-top: 40px;
+    }
+    .icono-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 16px;
+    }
+    .icono-item .ico { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
+    .icono-item h4 { font-weight: 700; font-size: .95rem; margin-bottom: 4px; }
+    .icono-item p { font-size: .82rem; color: var(--gray); }
+
+    /* ── PRECIOS ── */
+    #precios { background: var(--navy); }
+    .pricing-image {
+      width: 100%; max-width: 900px;
+      border-radius: 24px; margin: 0 auto 60px;
+      display: block;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .pricing-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 28px; max-width: 760px; margin: 0 auto;
+    }
+    .price-card {
+      background: var(--navy2);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 36px 32px;
+      text-align: center;
+      transition: border-color .2s, transform .2s;
+    }
+    .price-card:hover { border-color: rgba(255,184,0,0.5); transform: translateY(-4px); }
+    .price-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(145deg, var(--navy3), var(--navy2));
+      position: relative;
+    }
+    .price-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: var(--navy);
+      font-weight: 800; font-size: .78rem; letter-spacing: 1px;
+      padding: 5px 16px; border-radius: 20px; white-space: nowrap;
+    }
+    .plan-name {
+      font-family: var(--font-h); font-size: 2.4rem;
+      letter-spacing: 2px; margin-bottom: 8px;
+    }
+    .plan-name.lite { color: var(--white); }
+    .plan-name.pro { color: var(--gold); }
+    .plan-price {
+      font-family: var(--font-h); font-size: 3rem;
+      color: var(--gold); margin-bottom: 4px;
+    }
+    .plan-price-sub { font-size: .85rem; color: var(--gray); margin-bottom: 24px; }
+    .plan-features {
+      list-style: none; text-align: left;
+      display: flex; flex-direction: column; gap: 10px;
+      margin-bottom: 28px;
+    }
+    .plan-features li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: .92rem; color: rgba(255,255,255,.85);
+    }
+    .plan-features li .check { color: var(--green); font-size: 1.1rem; }
+    .plan-features li .lock { color: var(--gray); font-size: 1rem; }
+
+    /* ── PROCESO ── */
+    #proceso { background: var(--light); color: var(--navy); }
+    #proceso .eyebrow { color: var(--navy2); }
+    #proceso .section-title { color: var(--navy); }
+    #proceso .section-sub { color: #556; }
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+      gap: 0; position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute; top: 32px; left: 10%; right: 10%;
+      height: 2px; background: linear-gradient(90deg, var(--gold), rgba(255,184,0,0.2));
+      z-index: 0;
+    }
+    .step {
+      text-align: center; padding: 20px 16px; position: relative; z-index: 1;
+    }
+    .step-num {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--navy); color: var(--gold);
+      font-family: var(--font-h); font-size: 1.8rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; border: 3px solid var(--gold);
+    }
+    .step h4 { font-weight: 700; font-size: 1rem; margin-bottom: 6px; color: var(--navy); }
+    .step p { font-size: .85rem; color: #667; }
+
+    /* ── CTA FINAL ── */
+    #cta { background: var(--navy2); }
+    .cta-box {
+      background: linear-gradient(135deg, var(--navy3) 0%, rgba(255,184,0,0.08) 100%);
+      border: 1px solid rgba(255,184,0,0.25);
+      border-radius: 28px; padding: 64px 48px;
+      text-align: center; max-width: 700px; margin: 0 auto;
+    }
+    .cta-box .section-title { margin-bottom: 16px; }
+    .cta-box p { font-size: 1.1rem; color: var(--gray); margin-bottom: 36px; }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .cta-note { margin-top: 20px; font-size: .85rem; color: var(--gray); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #080d1a;
+      padding: 32px 24px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-logo {
+      font-family: var(--font-h); font-size: 1.6rem;
+      letter-spacing: 2px; color: var(--white); margin-bottom: 10px;
+    }
+    .footer-logo span { color: var(--gold); }
+    footer p { font-size: .8rem; color: var(--gray); }
+    .footer-links { display: flex; justify-content: center; gap: 20px; margin: 12px 0; }
+    .footer-links a { color: var(--gray); text-decoration: none; font-size: .82rem; }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .hero-container { grid-template-columns: 1fr; gap: 40px; }
+      .hero-image { order: -1; }
+      .hero-image img { max-width: 320px; margin: 0 auto; }
+      .hero-title { font-size: 3.5rem; }
+      .hero-stats { grid-template-columns: repeat(3,1fr); }
+      .app-split { grid-template-columns: 1fr; }
+      .app-split img { max-width: 320px; margin: 0 auto; }
+      .pricing-cards { grid-template-columns: 1fr; max-width: 380px; }
+      .iconos-list { grid-template-columns: 1fr; }
+      nav a:not(.nav-cta) { display: none; }
+      .trust-strip { gap: 20px; }
+      .steps::before { display: none; }
+      .cta-box { padding: 40px 24px; }
+    }
+
+    /* ── ANIMACIONES SCROLL ── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .15s; }
+    .reveal-delay-2 { transition-delay: .3s; }
+    .reveal-delay-3 { transition-delay: .45s; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     HEADER
+════════════════════════════════════════ -->
+<header>
+  <a href="#" class="header-logo">
+    <img src="logo.png" alt="JM Desarrollo de Apps">
+    PINTOR<span>APP</span>
+  </a>
+  <nav>
+    <a href="#features">Funciones</a>
+    <a href="#precios">Precios</a>
+    <a href="#proceso">Cómo funciona</a>
+    <a href="https://tinyurl.com/Pintoria" target="_blank" class="nav-cta">🚀 Probar Gratis</a>
+  </nav>
+</header>
+
+
+<!-- ═══════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        🎨 La App del Pintor Profesional
+      </div>
+      <h1 class="hero-title">
+        PRESUPUESTOS<br>
+        EN <span>2 MINUTOS</span><br>
+        DESDE TU MÓVIL
+      </h1>
+      <p class="hero-subtitle">
+        Hecha por un pintor, para pintores. Sin ordenador, sin complicaciones. 
+        Dicta por voz, calcula m², genera PDFs y envía por WhatsApp.
+      </p>
+      <div class="hero-buttons">
+        <a href="https://tinyurl.com/Pintoria" target="_blank" class="btn-gold">
+          🚀 Probar PintorApp LITE — 5€
+        </a>
+        <a href="https://wa.me/34643223301?text=Hola,%20quiero%20probar%20PintorApp%20Pro%20gratis%2015%20días" target="_blank" class="btn-outline">
+          💬 15 días Pro GRATIS
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">652</div>
+          <div class="stat-label">Colores NCS·RAL·RGB</div>
+        </div>
+        <div>
+          <div class="stat-num">43</div>
+          <div class="stat-label">Conceptos de tarifa</div>
+        </div>
+        <div>
+          <div class="stat-num">5€</div>
+          <div class="stat-label">Pago único LITE</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="hero.png" alt="PintorApp en manos de pintor">
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     STRIP CONFIANZA
+════════════════════════════════════════ -->
+<div class="trust-strip">
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    Sin instalación · funciona en el navegador
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    Sin suscripción oculta
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    Soporte directo por WhatsApp
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    Zona Cataluña · Madrid · Sevilla · Canarias
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     FEATURES
+════════════════════════════════════════ -->
+<section id="features">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <span class="eyebrow">✨ Funcionalidades</span>
+      <h2 class="section-title">Todo lo que necesitas<br>en el bolsillo</h2>
+      <p class="section-sub">Diseñada para el día a día del pintor. Sin complicaciones, sin formación.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-icon">🎤</span>
+        <h3>Dictado por Voz</h3>
+        <p>Dicta el nombre del cliente, la dirección y los trabajos sin teclear. Con las manos manchadas de pintura funciona igual.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <span class="feature-icon">📄</span>
+        <h3>PDF Profesional</h3>
+        <p>Genera presupuestos con tu logo, datos fiscales, partidas detalladas y totales. Aspecto de empresa grande desde el móvil.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <span class="feature-icon">💬</span>
+        <h3>Envío por WhatsApp</h3>
+        <p>Un toque y el presupuesto vuela al cliente. Sin email, sin imprimir, sin complicaciones.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🎨</span>
+        <h3>652 Colores NCS·RAL·RGB</h3>
+        <p>Carta completa de colores profesional integrada. Selecciona el color, aparece en el presupuesto con código.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <span class="feature-icon">📐</span>
+        <h3>Calculadora de m²</h3>
+        <p>Calcula superficies de habitaciones, fachadas multi-tramo, techos. Resultado directo al presupuesto.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <span class="feature-icon">💰</span>
+        <h3>Tarifa Orientativa</h3>
+        <p>43 conceptos en 9 categorías con precios de referencia por zona. Obra nueva y rehabilitación diferenciados.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     APP SHOWCASE (imagen teléfono)
+════════════════════════════════════════ -->
+<section id="app" class="section-light">
+  <div class="container">
+    <div class="app-split">
+      <div class="reveal">
+        <img src="telefono.png" alt="PintorApp Pro en acción">
+      </div>
+      <div class="reveal reveal-delay-1">
+        <span class="eyebrow" style="color:var(--navy2)">📱 La app en acción</span>
+        <h2 class="app-tagline" style="color:var(--navy)">
+          DE UN <em style="color:var(--gold2)">PINTOR</em><br>
+          PARA LOS<br>
+          <em style="color:var(--gold2)">PINTORES</em>
+        </h2>
+        <p style="color:#556; font-size:1.05rem; line-height:1.7; margin-bottom:32px;">
+          PintorApp nació de la experiencia real en el sector. Cada función está pensada 
+          para lo que un pintor necesita: rápido, claro y sin tonterías.
+        </p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="https://tinyurl.com/Pintoria" target="_blank" class="btn-gold">
+            🔓 Abrir PintorApp Lite
+          </a>
+          <a href="https://wa.me/34643223301?text=Quiero%20ver%20PintorApp%20Pro" target="_blank" class="btn-outline" style="border-color:rgba(0,0,0,0.2);color:var(--navy);">
+            Ver la versión Pro →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     ICONOS / GRID DE FUNCIONES
+════════════════════════════════════════ -->
+<section id="iconos">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <span class="eyebrow">🔧 Herramientas pro</span>
+      <h2 class="section-title">Todas las herramientas<br>en un solo lugar</h2>
+    </div>
+    <div class="reveal">
+      <img src="iconos.png" alt="Funciones de PintorApp" class="iconos-img">
+    </div>
+    <div class="iconos-list">
+      <div class="icono-item reveal">
+        <span class="ico">🗂️</span>
+        <div>
+          <h4>Presupuestos guardados</h4>
+          <p>Historial completo de clientes y obras anteriores (Pro)</p>
+        </div>
+      </div>
+      <div class="icono-item reveal reveal-delay-1">
+        <span class="ico">🏗️</span>
+        <div>
+          <h4>Calc. fachadas multi-tramo</h4>
+          <p>Mide cada tramo por separado, suma automáticamente</p>
+        </div>
+      </div>
+      <div class="icono-item reveal reveal-delay-2">
+        <span class="ico">🔑</span>
+        <div>
+          <h4>Acceso por clave</h4>
+          <p>Sin registro, sin datos. Tu clave, tu app.</p>
+        </div>
+      </div>
+      <div class="icono-item reveal reveal-delay-3">
+        <span class="ico">🏠</span>
+        <div>
+          <h4>Obra Nueva vs Rehabilitación</h4>
+          <p>Precios diferenciados para cada tipo de trabajo</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     PRECIOS
+════════════════════════════════════════ -->
+<section id="precios">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <span class="eyebrow">💶 Precios transparentes</span>
+      <h2 class="section-title">¿Cuál se adapta<br>mejor a ti?</h2>
+      <p class="section-sub">Sin letra pequeña. Sin sorpresas. Paga una vez o suscríbete y cancela cuando quieras.</p>
+    </div>
+
+    <img src="lite-pro.png" alt="Comparativa PintorApp Lite vs Pro" class="pricing-image reveal">
+
+    <div class="pricing-cards">
+      <!-- LITE -->
+      <div class="price-card reveal">
+        <div class="plan-name lite">LITE</div>
+        <div class="plan-price">5€</div>
+        <div class="plan-price-sub">Pago único · de por vida</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Crear presupuestos</li>
+          <li><span class="check">✓</span> PDF + envío WhatsApp</li>
+          <li><span class="check">✓</span> Calculadora m²</li>
+          <li><span class="check">✓</span> Carta NCS + RAL</li>
+          <li><span class="check">✓</span> Dictado por voz</li>
+          <li><span class="check">✓</span> 1 partida libre</li>
+          <li><span class="lock">🔒</span> Tarifa Orientativa</li>
+          <li><span class="lock">🔒</span> Historial de clientes</li>
+        </ul>
+        <a href="https://tinyurl.com/Pintoria" target="_blank" class="btn-outline" style="width:100%;justify-content:center;">
+          🔓 Entrar a Lite
+        </a>
+      </div>
+      <!-- PRO -->
+      <div class="price-card featured reveal reveal-delay-1">
+        <div class="price-badge">⭐ MÁS COMPLETA</div>
+        <div class="plan-name pro">PRO</div>
+        <div class="plan-price">4,99€<span style="font-size:1.4rem">/mes</span></div>
+        <div class="plan-price-sub">o 29€/año · Ahorra 31€</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Todo lo de Lite</li>
+          <li><span class="check">✓</span> Tarifa Orientativa</li>
+          <li><span class="check">✓</span> Carta Bruguer + Valentine</li>
+          <li><span class="check">✓</span> Calc. litros y botes</li>
+          <li><span class="check">✓</span> Partidas ilimitadas</li>
+          <li><span class="check">✓</span> Historial de clientes</li>
+          <li><span class="check">✓</span> PDF profesional avanzado</li>
+          <li><span class="check">✓</span> 15 días gratis de prueba</li>
+        </ul>
+        <a href="https://wa.me/34643223301?text=Hola,%20quiero%20la%20clave%20de%2015%20días%20gratis%20de%20PintorApp%20Pro" target="_blank" class="btn-gold" style="width:100%;justify-content:center;">
+          💬 Pedir clave gratis
+        </a>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:28px;color:var(--gray);font-size:.9rem;">
+      Pago por Bizum o transferencia · Clave entregada por WhatsApp en minutos
+    </p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     CÓMO FUNCIONA
+════════════════════════════════════════ -->
+<section id="proceso">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <span class="eyebrow">📋 Proceso</span>
+      <h2 class="section-title">Empezar es muy fácil</h2>
+      <p class="section-sub">En 5 pasos tienes tu primer presupuesto profesional enviado al cliente.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <h4>Entra a la app</h4>
+        <p>Sin descargar nada. Abre el enlace en el móvil.</p>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <h4>Datos del cliente</h4>
+        <p>Nombre, dirección y obra. Dicta por voz.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <h4>Añade partidas</h4>
+        <p>Elige de la tarifa o escribe libremente. Con m² o unidades.</p>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-num">4</div>
+        <h4>Genera el PDF</h4>
+        <p>Con tu logo y datos fiscales. Aspecto 100% profesional.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">5</div>
+        <h4>Envía por WhatsApp</h4>
+        <p>Un toque. El cliente lo recibe al instante.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     CTA FINAL
+════════════════════════════════════════ -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-box reveal">
+      <span class="eyebrow">🚀 Empieza hoy</span>
+      <h2 class="section-title">Tu próximo presupuesto<br>en <span style="color:var(--gold)">2 minutos</span></h2>
+      <p>Únete a los pintores que ya usan PintorApp. Prueba la versión Lite por solo 5€ o pide tu clave de 15 días gratis de la versión Pro.</p>
+      <div class="cta-buttons">
+        <a href="https://tinyurl.com/Pintoria" target="_blank" class="btn-gold">
+          🔓 Entrar a PintorApp Lite — 5€
+        </a>
+        <a href="https://wa.me/34643223301?text=Hola,%20quiero%20probar%20PintorApp%20Pro%20gratis" target="_blank" class="btn-whatsapp">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          15 días Pro GRATIS
+        </a>
+      </div>
+      <p class="cta-note">📞 +34 643 22 33 01 · Respuesta en minutos · Sin compromiso</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer>
+  <div class="footer-logo">PINTOR<span>APP</span></div>
+  <div class="footer-links">
+    <a href="#features">Funciones</a>
+    <a href="#precios">Precios</a>
+    <a href="#proceso">Cómo funciona</a>
+    <a href="https://tinyurl.com/Pintoria" target="_blank">Entrar a la App</a>
+    <a href="https://wa.me/34643223301" target="_blank">WhatsApp</a>
+  </div>
+  <p>© 2026 PintorApp · Desarrollado por <strong>JM Prestige AI Solutions</strong> · Lleida</p>
+  <p style="margin-top:6px;">pintoria.es · <a href="mailto:pedrosaborrego@gmail.com" style="color:var(--gray)">pedrosaborrego@gmail.com</a></p>
+</footer>
+
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Header scroll effect
+  const header = document.querySelector('header');
+  window.addEventListener('scroll', () => {
+    header.style.background = window.scrollY > 50
+      ? 'rgba(15,22,40,0.98)'
+      : 'rgba(15,22,40,0.92)';
+  });
+</script>
+</body>
+</html>
 
